@@ -22,8 +22,8 @@ typedef struct {
     int x1, y1, x2, y2;
     int width;
     int time;
-}Vein;
-queue<Vein> veins;
+}VineDraw;
+queue<VineDraw> vines;
 
 DWORD WINAPI eraser(LPVOID lpParam);
 void vine2(int x1, int y1, float anchor, float turn, int speed, int cost, Color color, int count, int clone);
@@ -146,7 +146,7 @@ void vine2(int x1, int y1, float anchor, float turn, int speed, int cost, Color 
     penline.SetStartCap(LineCapRound);
     mtx.lock();
     graphics->DrawLine(&penline, x1, y1, x2, y2);
-    veins.push(Vein{x1,y1,x2,y2,speed,50});
+    vines.push(VineDraw{x1,y1,x2,y2,speed,50});
     mtx.unlock();
     Sleep(1);
     if (clone > 0 && rand() % 10 == 0)
@@ -177,15 +177,15 @@ DWORD WINAPI eraser(LPVOID lpParam)
     erase.SetStartCap(LineCapRound);
     while(true)
     {
-        if (!veins.empty())
+        if (!vines.empty())
         {
-            veins.front().time--;
-            if (veins.front().time <= 0)
+            vines.front().time--;
+            if (vines.front().time <= 0)
             {
-                erase.SetWidth(veins.front().width * 2 + 2);
+                erase.SetWidth(vines.front().width * 2 + 2);
                 mtx.lock();
-                graphics->DrawLine(&erase, veins.front().x1, veins.front().y1, veins.front().x2, veins.front().y2);
-                veins.pop();
+                graphics->DrawLine(&erase, vines.front().x1, vines.front().y1, vines.front().x2, vines.front().y2);
+                vines.pop();
                 mtx.unlock();
             }
         }
